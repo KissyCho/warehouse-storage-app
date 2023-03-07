@@ -10,7 +10,8 @@ const createTablesQuery = `
             id SERIAL PRIMARY KEY,
             name VARCHAR(50) NOT NULL,
             size_per_unit INT NOT NULL,
-            hazardous BOOLEAN DEFAULT false
+            hazardous BOOLEAN DEFAULT false,
+            quantity INT NOT NULL default 0
         );
 
         CREATE TABLE IF NOT EXISTS stock_movements (
@@ -32,14 +33,14 @@ const insertDataQuery = `
             SELECT 'Warehouse B', true, 5000
             WHERE NOT EXISTS (SELECT 1 FROM warehouses LIMIT 1);
 
-            INSERT INTO products (name, size_per_unit, hazardous)
-            SELECT 'My Fancy Product A', 100, false
+            INSERT INTO products (name, size_per_unit, hazardous, quantity)
+            SELECT 'My Fancy Product A', 30, false, 500
             WHERE NOT EXISTS (SELECT 1 FROM products LIMIT 1)
             UNION ALL
-            SELECT 'My Fancy Product B', 340, true
+            SELECT 'My Fancy Product B', 20, true, 1000
             WHERE NOT EXISTS (SELECT 1 FROM products LIMIT 1)
             UNION ALL
-            SELECT 'My Fancy Product C', 5000, false
+            SELECT 'My Fancy Product C', 10, false, 300
             WHERE NOT EXISTS (SELECT 1 FROM products LIMIT 1);
 
             INSERT INTO stock_movements (warehouse_id, product_id, movement_type, date, quantity)

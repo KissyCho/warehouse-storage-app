@@ -5,14 +5,15 @@ const typeDefs = gql`
         id: ID!
         name: String!
         size: Int!
-        hazardousStock: Boolean!
+        hazardous_stock: Boolean!
     }
 
     type Product {
         id: ID!
         name: String!
-        sizePerUnit: Int!
+        size_per_unit: Int!
         hazardous: Boolean!
+        quantity: Int!
     }
 
     type StockMovement {
@@ -26,6 +27,7 @@ const typeDefs = gql`
     type Query {
         stockMovements: [StockMovement!]!
         warehouses: [Warehouse!]!
+        products: [Product]
     }
 `
 

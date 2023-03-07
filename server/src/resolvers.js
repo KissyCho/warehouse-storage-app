@@ -3,6 +3,7 @@ import { findAll } from "./db/customORM.js";
 import { connect } from './db/database.js'
 const STOCK_MOVEMENT = 'stock_movement';
 const WAREHOUSES = 'warehouses';
+const PRODUCTS = 'products';
 
 connect();
 
@@ -13,6 +14,9 @@ const resolvers = {
     },
     warehouses() {
       return findAll(WAREHOUSES)
+    },
+    products() {
+      return findAll(PRODUCTS);
     }
   }
 }
