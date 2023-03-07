@@ -5,17 +5,14 @@ const findAll = async (table) => {
 //   const client = await connect();
 
     try {
-        // pool.connect()
-        const { rows } = await pool.query(`SELECT * FROM ${table}`)
+        const client = await pool.connect();
+        const { rows } = await client.query(`SELECT * FROM ${table}`);
         console.log(rows)
-        // pool.release();
-        return rows
+        client.release();
+        return rows;
 
     } catch(err) {
         console.log(err)
-    } finally {
-        // Release the client back to the pool
-       // client.release();
     }
 }
 

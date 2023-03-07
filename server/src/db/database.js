@@ -1,7 +1,7 @@
 import pkg from 'pg';
 const { Pool } = pkg;
 
-import { createTablesQuery, insertDataQuery } from './dbSchema.js';
+import { createTablesQuery, insertDataQuery} from './dbSchema.js';
 
 const pool = new Pool({
     host: process.env.PG_HOST,
@@ -20,12 +20,13 @@ const initializeDatabase = async () => {
     try {
         const client = await pool.connect();
          // Create the table
-        client.query(createTablesQuery);
+        const res = await client.query(createTablesQuery);
+        console.log(res)
         console.log('Table created successfully');
         
-        // Insert data
-        client.query(insertDataQuery);
-        console.log('Data inserted successfully');
+        // // Insert data
+         await client.query(insertDataQuery);
+        // console.log('Data inserted successfully');
 
         // // Release the client
         client.release();
