@@ -1,0 +1,27 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Warehouse Storage application",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd src && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KissyCho/warehouse-storage-app.git"
+  },
+  "author": "Karina Cholakova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KissyCho/warehouse-storage-app/issues"
+  },
+  "homepage": "https://github.com/KissyCho/warehouse-storage-app#readme",
+  "dependencies": {
+    "apollo-server": "^3.12.0",
+    "dotenv": "^16.0.3",
+    "graphql": "^16.6.0",
+    "pg": "^8.10.0"
+  }
+}
