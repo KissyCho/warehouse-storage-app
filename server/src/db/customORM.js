@@ -7,7 +7,6 @@ const findAll = async (table) => {
     try {
         const client = await pool.connect();
         const { rows } = await client.query(`SELECT * FROM ${table}`);
-        console.log(rows)
         client.release();
         return rows;
 
