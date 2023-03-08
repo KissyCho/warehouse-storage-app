@@ -1,6 +1,8 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useContext } from "react";
 import { HomeContainer } from "./styles";
 import { gql, useQuery } from '@apollo/client';
+import Modal from "../../components/Modal";
+import { ModalContext } from "../../context/ModalContext";
 
 const Home = () => {
     const GET_PRODUCT = gql`
@@ -16,6 +18,10 @@ const Home = () => {
     `
     const [products, setProducts] = useState();
 
+    const { state, toggleModal } = useContext(ModalContext)
+    const { isModalVisible } = state
+    
+
     const { loading, error, data } = useQuery(GET_PRODUCT, {
         onCompleted: (queryData) => {
             setProducts(queryData?.products)
@@ -28,10 +34,10 @@ const Home = () => {
                 The superhero for your warehouse, keeping track of your inventory so you don't have to.<br/> 
                 It's like having a personal assistant, but without the coffee runs.
             </p>
-            <div className="d-flex mt-5 mb-5">
-                <input className="form-control form-control-lg"></input>
-                <button type="button" class="btn btn-primary"> Add Product</button>
-            </div>
+
+            {isModalVisible && <Modal/>}
+
+            <button type="button" class="btn btn-primary mb-5" onClick={() => toggleModal()}> Add Product</button>
             
             <table className="table">
                 <thead>
