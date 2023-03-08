@@ -7,6 +7,11 @@ const HomeContainer = styled.div`
     .form-control {
         width: 80%;
     }
+
+    a {
+        text-decoration: none;
+        color: white;
+    }
 `
 
 export {HomeContainer}

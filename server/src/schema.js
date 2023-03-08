@@ -18,16 +18,28 @@ const typeDefs = gql`
 
     type StockMovement {
         id: ID!
-        product: Product!
-        amount: Int!
+        product_id: Product!
+        warehouse_id: Warehouse!
+        quantity: Int!
         date: String!
-        type: String!
+        movement_type: String!
+    }
+
+    input NewProductInput {
+        name: String!
+        size_per_unit: Int!
+        hazardous: Boolean!
+        quantity: Int!
     }
 
     type Query {
         stockMovements: [StockMovement!]!
         warehouses: [Warehouse!]!
         products: [Product]
+    }
+
+    type Mutation {
+        createProduct(input: NewProductInput!): Product!
     }
 `
 

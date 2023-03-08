@@ -22,7 +22,6 @@ const initializeDatabase = async () => {
          // Create the table
         const res = await client.query(createTablesQuery);
         console.log(res)
-        console.log('Table created successfully');
         
         // // Insert data
          await client.query(insertDataQuery);
