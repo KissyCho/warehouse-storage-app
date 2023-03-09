@@ -12,6 +12,13 @@ const typeDefs = gql`
         warehouseId: ID
         totalStock: Int
         occupiedSpace: Int
+        productStocks: [ProductStocks]
+    }
+
+    type ProductStocks {
+        product_id: Int,
+        name: String,
+        count: Int
     }
 
     type Product {

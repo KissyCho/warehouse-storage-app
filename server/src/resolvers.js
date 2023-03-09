@@ -27,30 +27,48 @@ const resolvers = {
     const warehouseStocks = {}
     const allProducts = await findAll(PRODUCTS)
  
-    rows.forEach(async (stockMovement) => {
+    rows.forEach((stockMovement) => {
       const warehouseId = stockMovement.warehouse_id
       const quantity = stockMovement.quantity
       const movementType = stockMovement.movement_type
       const resultRows = allProducts.find(p => p.id === stockMovement.product_id)
 
+
       if(!warehouseStocks[warehouseId]) {
-        warehouseStocks[warehouseId] = { totalStock: 0, occupiedSpace: 0}
+        warehouseStocks[warehouseId] = { 
+          totalStock: 0, 
+          occupiedSpace: 0,
+          productStocks: {}
+        }
+      }
+
+      if (!warehouseStocks[warehouseId].productStocks[resultRows.id]) {
+          warehouseStocks[warehouseId].productStocks[resultRows.id] = {
+            product_id: resultRows.id,
+            name: resultRows.name,
+            count: 0
+          }
+
       }
  
       if (movementType === 'import') {
         warehouseStocks[warehouseId].totalStock += quantity
        warehouseStocks[warehouseId].occupiedSpace += resultRows ? resultRows.size_per_unit * quantity : 0
+       warehouseStocks[warehouseId].productStocks[resultRows.id].count += quantity
       } else {
         warehouseStocks[warehouseId].totalStock -= quantity
         warehouseStocks[warehouseId].occupiedSpace -= resultRows ? resultRows.size_per_unit * quantity : 0
+        warehouseStocks[warehouseId].productStocks[resultRows.id].count -= quantity
       }
     })
 
     const result = Object.keys(warehouseStocks).map(warehouseId => ({
       warehouseId,
       totalStock: warehouseStocks[warehouseId].totalStock,
-      occupiedSpace: warehouseStocks[warehouseId].occupiedSpace
+      occupiedSpace: warehouseStocks[warehouseId].occupiedSpace,
+      productStocks: Object.values(warehouseStocks[warehouseId].productStocks)
     }));
+    console.log(result[0].productStocks)
         return result
     },
   },

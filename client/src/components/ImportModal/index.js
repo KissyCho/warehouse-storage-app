@@ -22,8 +22,9 @@ const ImportModal = () => {
     const { toggleModal } = useContext(ModalContext)
     const [currentWarehouseId, setCurrentWarehouseId] = useState()
     const { state } = useContext(DataContext);
-    const {warehouses, products } = state
+    const {warehouses, products, warehouseStockAmount } = state
     const [createStockMovement] = useMutation(NEW_STOCK_MOVEMENT)
+    const [errorMessages, setErrorMessages ] = useState(null)
 
     const { register, handleSubmit, watch, reset, formState: { errors }} = useForm({
         resolver: zodResolver(schema),
@@ -36,18 +37,36 @@ const ImportModal = () => {
         setCurrentWarehouseId(warehouseId)
     },[warehouseId])
     const handleAddStockMovement = (formValues) => {
-        console.log(formValues)
         const { warehouse_id, quantity, product_id, date, movement_type } = formValues
-        createStockMovement({
-            variables: {
+        const warehouseProducts= warehouseStockAmount
+        try {
+            if( movement_type === 'export') {
+                const products  = warehouseProducts.find(e => e.productStocks[0].product_id == product_id)
+                
+                if (!products) {
+                    throw new Error('Product is not stocked here');
+                }
+                if(quantity > products.productStocks[0].count) {
+                    throw new Error('Not enough amount');
+                } 
+            } else if ( movement_type === 'import') {
+
+            }
+
+            createStockMovement({
+                variables: {
                     warehouse_id: Number(warehouse_id),
                     quantity: quantity,
                     product_id: Number(product_id),
                     date: date,
                     movement_type: movement_type
-            }
-        })
-        toggleModal()
+                 }
+             })
+            toggleModal()
+
+        } catch (error) {
+            setErrorMessages(error.message);
+        }
     }
 
     return createPortal(
@@ -85,6 +104,7 @@ const ImportModal = () => {
 
                 {errors.quantity && <span>{errors.quantity?.message}</span>}
                 {errors.date && <span>{errors.date?.message}</span>}
+                {errorMessages && <span>{errorMessages}</span>}
                 <div className="buttons-container">
                     <button type="submit" className="btn btn-success">Add</button>
                     <button type="button" className="btn btn-danger" onClick={(e) => {e.preventDefault(); reset(); toggleModal() }}>Cancel</button>

@@ -62,8 +62,13 @@ const GET_WAREHOUSE_STOCK_AMOUNT = gql`
   query getCurrentStockAmount {
     getCurrentStockAmount {
       warehouseId
-      totalStock,
+      totalStock
       occupiedSpace
+      productStocks {
+        product_id
+        name
+        count
+      }
     }
   }
 `;
