@@ -50,6 +50,9 @@ const insertDataQuery = `
             SELECT 2, 2, 'import', TO_TIMESTAMP('2022-03-07', 'YYYY-MM-DD'), 340
             WHERE NOT EXISTS (SELECT 1 FROM stock_movements LIMIT 1);
 
+            UPDATE products SET quantity = quantity - 100 WHERE id = 1;
+            UPDATE products SET quantity = quantity - 340 WHERE id = 2;
+
             COMMIT;
  `;
 

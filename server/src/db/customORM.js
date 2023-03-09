@@ -42,6 +42,12 @@ const insertImport = async(table, data) => {
         console.log(data)
         const result = await client.query(`INSERT INTO stock_movements (warehouse_id, product_id, date, quantity, movement_type)
         VALUES ($1, $2, $3, $4, $5)`, [data.warehouse_id, data.product_id, data.date, data.quantity, data.movement_type])
+        if (data.movement_type === 'import') {
+            await client.query(`UPDATE products SET quantity = quantity - $1 WHERE id = $2;`,[data.quantity, data.product_id])
+        } else if (data.movement_type === 'export') {
+            await client.query(`UPDATE products SET quantity = quantity + $1 WHERE id = $2;`,[data.quantity, data.product_id])
+        }
+        
         return result;
     } catch(error) {
         console.log(error)

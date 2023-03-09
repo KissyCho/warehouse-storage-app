@@ -52,11 +52,16 @@ const ImportModal = () => {
             } else if ( movement_type === 'import') {
                 const currentWarehouseSpace = warehouseStockAmount?.find(item => item.warehouseId == warehouse_id)
                 const currentWarehouse = warehouses.find(item => item.id == warehouse_id)
-
+                const currentProduct = products.find(product => product.id == product_id)
+        
                 const freeSpace = currentWarehouse?.size - currentWarehouseSpace?.occupiedSpace
-                console.log(products)
-                if (freeSpace < quantity) {
+                
+                if (freeSpace < +currentProduct?.size_per_unit * quantity) {
                     throw new Error ('Not enough space')
+                }
+
+                if (currentProduct.quantity < quantity) {
+                    throw new Error ('Not enough product amount')
                 }
             }
 
