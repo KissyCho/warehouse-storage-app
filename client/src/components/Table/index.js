@@ -6,8 +6,6 @@ const Table = ({ items, headers, type, ...rest }) => {
                     <tr>
                         <th scope="col">#</th>
                         {headers.map((element, index) => {
-                            console.log(element)
-                            console.log(index)
                             return (
                                 <th scope="col" key={index}>{element}</th>
                             )

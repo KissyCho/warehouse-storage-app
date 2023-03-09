@@ -5,6 +5,7 @@ import { ModalContainer } from './styles';
 import { ModalContext } from '../../context/ModalContext';
 import { NEW_PRODUCT } from '../../data/queries';
 import { useMutation } from '@apollo/client';
+import Button from '../Button';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -72,16 +73,14 @@ const Modal = () => {
                          <input type='radio' {...register('hazardous')} value={0} defaultChecked={watch('hazardous') === undefined || watch('hazardous') === 0}/> No 
                     </label> 
                     </div>
-                   
-                   
                 </div>
                 {errors.name && <span>{errors.name?.message}</span>}
                 {errors.size && <span>{errors.size?.message}</span>}
                 {errors.quantity && <span>{errors.quantity?.message}</span>}
                 
                 <div className="buttons-container">
-                    <button type="submit" className="btn btn-success">Add</button>
-                    <button type="button" className="btn btn-danger" onClick={(e) => {e.preventDefault(); reset(); toggleModal() }}>Cancel</button>
+                    <Button btnType="success" type="submit">Add</Button>
+                    <Button type="button" btnType="danger" onClick={(e) => {e.preventDefault(); reset(); toggleModal()}}>Cancel</Button>
                 </div>
                 
             </form>

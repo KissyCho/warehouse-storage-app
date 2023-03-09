@@ -10,6 +10,14 @@ import { NEW_STOCK_MOVEMENT } from '../../data/queries';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
+const schema = z.object({
+    quantity: z.number().min(1, {message: 'Please enter quantity above 1'}),
+    warehouse_id: z.string(),
+    date: z.string().min(1, {message: 'Please enter a date' }),
+    product_id: z.string(),
+    movement_type: z.string()
+})
+
 const ImportModal = () => {
     const { toggleModal } = useContext(ModalContext)
     const [currentWarehouseId, setCurrentWarehouseId] = useState()
@@ -18,18 +26,17 @@ const ImportModal = () => {
     const [createStockMovement] = useMutation(NEW_STOCK_MOVEMENT)
 
     const { register, handleSubmit, watch, reset, formState: { errors }} = useForm({
-
+        resolver: zodResolver(schema),
         defaultValues: {
             quantity: 1,
-            
           }
     });
     let warehouseId = watch('warehouse_id')
     useEffect(() => {
         setCurrentWarehouseId(warehouseId)
     },[warehouseId])
-    console.log(warehouseId)
-    const handleAddProduct = (formValues) => {
+    const handleAddStockMovement = (formValues) => {
+        console.log(formValues)
         const { warehouse_id, quantity, product_id, date, movement_type } = formValues
         createStockMovement({
             variables: {
@@ -45,7 +52,7 @@ const ImportModal = () => {
 
     return createPortal(
         <ModalContainer>
-            <form onSubmit={handleSubmit(handleAddProduct)}>
+            <form onSubmit={handleSubmit(handleAddStockMovement)}>
                 Warehouse
                 <select {...register('warehouse_id', { required: true })}>
                         {warehouses.map(warehouse => (
@@ -74,8 +81,10 @@ const ImportModal = () => {
                 <select {...register('movement_type', { required: true })}>
                          <option value='import'>Import</option>
                          <option value='export'>Export</option>
-                    </select>
-                
+                </select>
+
+                {errors.quantity && <span>{errors.quantity?.message}</span>}
+                {errors.date && <span>{errors.date?.message}</span>}
                 <div className="buttons-container">
                     <button type="submit" className="btn btn-success">Add</button>
                     <button type="button" className="btn btn-danger" onClick={(e) => {e.preventDefault(); reset(); toggleModal() }}>Cancel</button>
