@@ -1,64 +1,29 @@
-
 import {Link} from 'react-router-dom'
-import { gql, useQuery, useMutation } from '@apollo/client';
-import { useState } from 'react';
+import { useContext, useEffect} from 'react';
+import { ModalContext } from "../../context/ModalContext";
+import { DataContext } from '../../context/DataContext';
+import ImportModal from '../../components/ImportModal';
 
 const Warehouses = () => {
+    const { state, toggleModal } = useContext(ModalContext)
+    const{ state: dataState, refetchWarehouses, refetchStockMovements, warehouseStockAmountRefetch } = useContext(DataContext)
 
-    const[warehouses, setWarehouses] = useState();
-    const [stockMovements, setStockMovements] = useState();
-
-    const GET_WAREHOUSES = gql`
-        query GetAllWarehouses {
-            warehouses {
-                id
-                name
-                size
-                hazardous_stock
-              }
-        }
-    `
-    const GET_STOCK_MOVEMENT = gql`
-        query GetStockMovements {
-            stockMovements {
-                id
-                product_id {
-                  id
-                  name
-                  size_per_unit
-                  hazardous
-                  quantity
-                }
-                warehouse_id {
-                    id
-                    name
-                    size
-                    hazardous_stock
-                }
-                quantity
-                date
-                movement_type
-            }
-        } 
-    `
-
-    const { refetch: refetchWarehouses } = useQuery(GET_WAREHOUSES, {
-        onCompleted: (queryData) => {
-            setWarehouses(queryData?.warehouses)
-        }
-    });
-
-    const { loading, error, data, refetch} = useQuery(GET_STOCK_MOVEMENT, {
-        onCompleted: (queryData) => {
-            console.log(queryData)
-            setStockMovements(queryData?.stockMovements)
-        }
-    })
+    const {warehouses, stockMovements, warehouseStockAmount} = dataState
+    const { isModalVisible } = state
+ 
+    useEffect(() => {
+        console.log('yes')
+        refetchStockMovements();
+        refetchWarehouses()
+        warehouseStockAmountRefetch() 
+      }, [isModalVisible]);
 
     return(
-        <div>
+       <>
+       {isModalVisible && <ImportModal/>}
+       <div>
             <button type="button" className="btn btn-info mb-5 ms-2"><Link to="/">Back to Products List</Link></button>
-            <button type="button" className='btn btn-primary mb-5 ms-2'>Add a warehouse</button>
+            <button type="button" class="btn btn-info mb-5 ms-2" onClick={() => {toggleModal() }}>Import / Export</button>
 
             <table className="table">
                 <thead>
@@ -68,19 +33,19 @@ const Warehouses = () => {
                         <th scope="col">Current Stock</th>
                         <th scope="col">Space Left</th>
                         <th scope="col">Hazardous Stock</th>
-                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
     
                     {warehouses && (
                          warehouses.map((element, index) => {
+                            const warehouseStock = warehouseStockAmount?.find(item => item.warehouseId == element.id)
                             return (
-                                <tr>
+                                <tr key={element.id}>
                                     <th scope="row">{index + 1}</th>
                                     <td>{element.name}</td>
-                                    <td>{element.size}</td>
-                    
+                                    <td>{warehouseStock?.totalStock}</td>
+                                    <td>{warehouseStock && element.size - warehouseStock?.totalStock}</td>
                                     <td>{element.hazardous_stock ? 'Yes' : 'No' }</td>
                                 </tr>
                             )
@@ -108,9 +73,8 @@ const Warehouses = () => {
     
                     {stockMovements && (
                          stockMovements.map((element, index) => {
-                            console.log(element)
                             return (
-                                <tr>
+                                <tr key={element.id}>
                                     <th scope="row">{index + 1}</th>
                                     <td>{element.product_id.name}</td>
                                     <td>{element.quantity}</td>
@@ -128,6 +92,10 @@ const Warehouses = () => {
                 </tbody>
             </table>
         </div>
+
+
+       </>
+        
     )
 }
 

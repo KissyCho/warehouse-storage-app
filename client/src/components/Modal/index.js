@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import { createPortal } from 'react-dom';
 import { ModalContainer } from './styles';
 import { ModalContext } from '../../context/ModalContext';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { NEW_PRODUCT } from '../../data/queries';
+import { useMutation } from '@apollo/client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,17 +14,6 @@ const schema = z.object({
     size: z.number().min(1, { message: 'Please enter size above 1' }),
     quantity: z.number().min(1, {message: 'Please enter quantity above 1'})
 })
-
-const NEW_PRODUCT = gql`
-    mutation createProduct($name: String!, $size_per_unit: Int!, $hazardous: Boolean!, $quantity: Int!) {
-        createProduct(input: {name: $name, size_per_unit: $size_per_unit, hazardous: $hazardous, quantity: $quantity }) {
-           name
-           size_per_unit
-           hazardous 
-           quantity
-        }
-    }
-`
 
 const Modal = () => {
     const { toggleModal } = useContext(ModalContext)
