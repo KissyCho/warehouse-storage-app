@@ -45,7 +45,7 @@ const Warehouses = () => {
                                     <th scope="row">{index + 1}</th>
                                     <td>{element.name}</td>
                                     <td>{warehouseStock?.totalStock}</td>
-                                    <td>{warehouseStock && element.size - warehouseStock?.totalStock}</td>
+                                    <td>{warehouseStock && warehouseStock?.occupiedSpace}</td>
                                     <td>{element.hazardous_stock ? 'Yes' : 'No' }</td>
                                 </tr>
                             )

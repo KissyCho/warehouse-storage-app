@@ -25,29 +25,32 @@ const resolvers = {
     const rows = await findAll(STOCK_MOVEMENT)
 
     const warehouseStocks = {}
-    
+    const allProducts = await findAll(PRODUCTS)
+ 
     rows.forEach(async (stockMovement) => {
       const warehouseId = stockMovement.warehouse_id
       const quantity = stockMovement.quantity
       const movementType = stockMovement.movement_type
-      const product = await findById(PRODUCTS, stockMovement.product_id)
-      console.log(product)
+      const resultRows = allProducts.find(p => p.id === stockMovement.product_id)
 
       if(!warehouseStocks[warehouseId]) {
-        warehouseStocks[warehouseId] = { totalStock: 0}
+        warehouseStocks[warehouseId] = { totalStock: 0, occupiedSpace: 0}
       }
-      
+ 
       if (movementType === 'import') {
         warehouseStocks[warehouseId].totalStock += quantity
+       warehouseStocks[warehouseId].occupiedSpace += resultRows ? resultRows.size_per_unit * quantity : 0
       } else {
         warehouseStocks[warehouseId].totalStock -= quantity
+        warehouseStocks[warehouseId].occupiedSpace -= resultRows ? resultRows.size_per_unit * quantity : 0
       }
     })
+
     const result = Object.keys(warehouseStocks).map(warehouseId => ({
       warehouseId,
-      totalStock: warehouseStocks[warehouseId]?.totalStock
+      totalStock: warehouseStocks[warehouseId].totalStock,
+      occupiedSpace: warehouseStocks[warehouseId].occupiedSpace
     }));
-    
         return result
     },
   },
