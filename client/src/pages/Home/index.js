@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 
 import { HomeContainer } from './styles';
 import Modal from '../../components/Modal';
@@ -35,7 +34,18 @@ const Home = () => {
       <Button type="button" classNames="mb-5 ms-2" btnType="info">
         <Link to="/warehouses">Manage Warehouses</Link>
       </Button>
-      <Table products={products} />
+      <Table 
+        items={products} 
+        headers={
+            [
+                'Name', 
+                'Size Per Unit', 
+                'Quantity',
+                'Hazardous'
+            ]
+        }
+        type="products"
+    />
     </HomeContainer>
   );
 };

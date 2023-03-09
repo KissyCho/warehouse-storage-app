@@ -1,20 +1,23 @@
-const Table = ({products}) => {
+const Table = ({ items, headers, type, ...rest }) => {
 
     return (
         <table className="table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Size Per Unit</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Hazardous</th>
+                        {headers.map((element, index) => {
+                            console.log(element)
+                            console.log(index)
+                            return (
+                                <th scope="col" key={index}>{element}</th>
+                            )
+                        })}
                     </tr>
                 </thead>
                 <tbody>
     
-                    {products && (
-                         products.map((element, index) => {
+                    {items && type === 'products' && (
+                         items.map((element, index) => {
                             return (
                                 <tr>
                                     <th scope="row">{index + 1}</th>
@@ -24,12 +27,40 @@ const Table = ({products}) => {
                                     <td>{element.hazardous ? 'Yes' : 'No' }</td>
                                 </tr>
                             )
-                         }
-                      
-                    ))
-                       
+                         })) 
                     }
-                  
+
+                    {items && type === 'warehouses-stock' && (
+                        items.map((element, index) => {
+                            const warehouseStock = rest.warehouseStockAmount?.find(item => item.warehouseId == element.id)
+                            return (
+                                <tr key={element.id}>
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{element.name}</td>
+                                    <td>{warehouseStock?.totalStock}</td>
+                                    <td>{warehouseStock && warehouseStock?.occupiedSpace}</td>
+                                    <td>{element.hazardous_stock ? 'Yes' : 'No' }</td>
+                                </tr>
+                            )
+                         }) 
+                    )}
+
+                    {items && type === 'stock-movements' && (
+                        items.map((element, index) => {
+                            return (
+                                <tr key={element.id}>
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{element.product_id.name}</td>
+                                    <td>{element.quantity}</td>
+                                    <td>{element.movement_type}</td>
+                                    <td>{element.warehouse_id.name}</td>
+                                    <td>{element.date}</td>
+                                </tr>
+                            )
+                         }
+                      )
+                    )}
+
                 </tbody>
             </table>
     )
