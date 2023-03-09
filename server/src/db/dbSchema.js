@@ -37,7 +37,7 @@ const insertDataQuery = `
             SELECT 'My Fancy Product A', 30, false, 500
             WHERE NOT EXISTS (SELECT 1 FROM products LIMIT 1)
             UNION ALL
-            SELECT 'My Fancy Product B', 20, true, 1000
+            SELECT 'My Fancy Product B', 5, true, 1000
             WHERE NOT EXISTS (SELECT 1 FROM products LIMIT 1)
             UNION ALL
             SELECT 'My Fancy Product C', 10, false, 300

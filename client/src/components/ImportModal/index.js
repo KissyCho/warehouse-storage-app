@@ -40,9 +40,9 @@ const ImportModal = () => {
         const { warehouse_id, quantity, product_id, date, movement_type } = formValues
         const warehouseProducts= warehouseStockAmount
         try {
-            if( movement_type === 'export') {
+            
+            if( movement_type === 'export') { 
                 const products  = warehouseProducts.find(e => e.productStocks[0].product_id == product_id)
-                
                 if (!products) {
                     throw new Error('Product is not stocked here');
                 }
@@ -50,7 +50,14 @@ const ImportModal = () => {
                     throw new Error('Not enough amount');
                 } 
             } else if ( movement_type === 'import') {
+                const currentWarehouseSpace = warehouseStockAmount?.find(item => item.warehouseId == warehouse_id)
+                const currentWarehouse = warehouses.find(item => item.id == warehouse_id)
 
+                const freeSpace = currentWarehouse?.size - currentWarehouseSpace?.occupiedSpace
+                console.log(products)
+                if (freeSpace < quantity) {
+                    throw new Error ('Not enough space')
+                }
             }
 
             createStockMovement({
